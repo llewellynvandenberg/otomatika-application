@@ -244,7 +244,7 @@ if __name__ == '__main__':
     workitems.load_work_item()
     # Access input data (assuming JSON format for work items)
     input_data = workitems.get_work_item_payload()
-    browser = BrowserActions(input_data['search_phrase'],  input_data['type'], input_data['months'])
+    browser = BrowserActions(input_data['search_phrase'],  input_data['section'], input_data['months'])
     print('initiated browser')
     browser.navigate_to_search()
     print('navigated to search')
