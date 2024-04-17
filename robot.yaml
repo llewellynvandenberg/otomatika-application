@@ -1,0 +1,5 @@
+tasks:
+  Run My Script:
+    command: python BrowserActions.py
+
+condaConfigFile: conda.yaml

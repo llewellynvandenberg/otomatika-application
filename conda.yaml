@@ -1,0 +1,9 @@
+channels:
+  - conda-forge
+
+dependencies:
+  - python=3.9.12
+  - pip:
+      - rpaframework==28.5.1
+
+description: "This environment is for running my robot that automates Ny Times News Collector"
