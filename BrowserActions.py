@@ -230,7 +230,7 @@ class BrowserActions:
 
     def save_file(self):
         """Save the Excel file with the collected data."""
-        file_name = "NY_TIMES_ARTICLES.xlsx"
+        file_name = "output/NY_TIMES_ARTICLES.xlsx"
         self.excel.auto_size_columns("A", "E")
         self.excel.save_workbook(file_name)
         logger.info(f"{datetime.now()}: Saved Excel file as {file_name}.")
