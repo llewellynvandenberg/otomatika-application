@@ -145,6 +145,7 @@ class BrowserActions:
         # find all search results up untill the specified months (stop when earlier month is found)
         while 1:
             # wait and gather all search results
+            browser.capture_page_screenshot('search_results.png')
             self.driver.wait_until_element_is_visible("css:[data-testid='search-bodega-result']", timeout=100)
             cards = self.driver.find_elements("css:[data-testid='search-bodega-result']")
             for i, _ in enumerate(cards):
