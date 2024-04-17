@@ -100,7 +100,7 @@ class BrowserActions:
             # wait and click sort by dropdown button
             self.driver.click_element_when_clickable("class:css-v7it2b", timeout=100)
             #wait and click sort by newest
-            self.driver.clock_element_when_clickable("css:[value='newest']", timeout=100)
+            self.driver.click_element_when_clickable("css:[value='newest']", timeout=100)
             logger.info(f"{datetime.now()}: Selected sort by 'newest' successfully.")
         except Exception as e:
             logger.info(f"{datetime.now()}: Could not select 'sort by' with error: {e}.")
