@@ -98,9 +98,9 @@ class BrowserActions:
         """Sort the search results by newest first."""
         try:
             # wait and click sort by dropdown button
-            self.driver.click_element_when_clickable("class:css-v7it2b", timeout=1000)
+            self.driver.click_element_when_clickable("class:css-v7it2b", timeout=100)
             #wait and click sort by newest
-            self.driver.clock_element_when_clickable("css:[value='newest']", timeout=1000)
+            self.driver.clock_element_when_clickable("css:[value='newest']", timeout=100)
             logger.info(f"{datetime.now()}: Selected sort by 'newest' successfully.")
         except Exception as e:
             logger.info(f"{datetime.now()}: Could not select 'sort by' with error: {e}.")
@@ -110,10 +110,10 @@ class BrowserActions:
     def navigate_to_search(self):
         """Navigate to the search page and input the search query."""
         # wait and click search button
-        self.driver.click_element_when_clickable("css:[data-testid='search-button']", timeout=1000)
+        self.driver.click_element_when_clickable("css:[data-testid='search-button']", timeout=100)
         #self.driver.click_button("css:[data-testid='search-button']")
         # wait and input search phrase
-        self.driver.wait_until_element_is_enabled("css:[data-testid='search-input']", timeout=1000)
+        self.driver.wait_until_element_is_enabled("css:[data-testid='search-input']", timeout=100)
         self.driver.input_text("css:[data-testid='search-input']", self.search_phrase)
         # submit search phrase by pressing enter
         self.driver.press_keys("css:[data-testid='search-input']", "ENTER")
@@ -130,7 +130,7 @@ class BrowserActions:
             # scroll to bottom of page to avoid bot detection
             self.driver.execute_javascript("window.scrollTo(0, document.body.scrollHeight);")
             # wait and click load more button
-            self.driver.wait_until_element_is_enabled("css:[data-testid='search-show-more-button']", timeout=1000)
+            self.driver.wait_until_element_is_enabled("css:[data-testid='search-show-more-button']", timeout=100)
             self.driver.click_button("css:[data-testid='search-show-more-button']")
             sleep(3)
         except Exception as e:
@@ -144,7 +144,7 @@ class BrowserActions:
         # find all search results up untill the specified months (stop when earlier month is found)
         while 1:
             # wait and gather all search results
-            self.driver.wait_until_element_is_visible("css:[data-testid='search-bodega-result']", timeout=1000)
+            self.driver.wait_until_element_is_visible("css:[data-testid='search-bodega-result']", timeout=100)
             cards = self.driver.find_elements("css:[data-testid='search-bodega-result']")
             for i, _ in enumerate(cards):
                 # get date of each search result
@@ -168,7 +168,7 @@ class BrowserActions:
         # initiate results dictionary
         results = {'Title':['Title'], 'Content':['Content'], 'Date':['Date'], 'Phrase Count':['Phrase Count'], 'Has Money':['Has Money'], 'Image':['Image']}
         # wait and gather all search results
-        self.driver.wait_until_element_is_visible("css:[data-testid='search-bodega-result']", timeout=1000)
+        self.driver.wait_until_element_is_visible("css:[data-testid='search-bodega-result']", timeout=100)
         cards = self.driver.find_elements("css:[data-testid='search-bodega-result']")
         for i, _ in enumerate(cards):
             # get date of each search result
