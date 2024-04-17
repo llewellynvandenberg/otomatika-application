@@ -98,11 +98,9 @@ class BrowserActions:
         """Sort the search results by newest first."""
         try:
             # wait and click sort by dropdown button
-            self.driver.wait_until_page_contains_element("class:css-v7it2b", timeout=20)
-            self.driver.click_element("class:css-v7it2b")
+            self.driver.click_element_when_clickable("class:css-v7it2b", timeout=100)
             #wait and click sort by newest
-            self.driver.wait_until_element_is_visible("css:[value='newest']", timeout=20)
-            self.driver.click_element("css:[value='newest']")
+            self.driver.clock_element_when_clickable("css:[value='newest']", timeout=20)
             logger.info(f"{datetime.now()}: Selected sort by 'newest' successfully.")
         except Exception as e:
             logger.info(f"{datetime.now()}: Could not select 'sort by' with error: {e}.")
@@ -119,8 +117,6 @@ class BrowserActions:
         self.driver.input_text("css:[data-testid='search-input']", self.search_phrase)
         # submit search phrase by pressing enter
         self.driver.press_keys("css:[data-testid='search-input']", "ENTER")
-        # wait for search results to load
-        self.driver.wait_until_page_contains_element("css:[data-testid='search-page-text-field']", timeout=30)
         self.select_sort_by()
         sleep(1)
         self.select_topic()
@@ -136,7 +132,7 @@ class BrowserActions:
             # wait and click load more button
             self.driver.wait_until_element_is_enabled("css:[data-testid='search-show-more-button']", timeout=20)
             self.driver.click_button("css:[data-testid='search-show-more-button']")
-            sleep(1)
+            sleep(3)
         except Exception as e:
             logger.info(f"{datetime.now()}: Could not load more results with error: {e}.")
             print(f'could not navigate to next page: {e}')
