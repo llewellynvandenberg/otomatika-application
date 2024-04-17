@@ -23,7 +23,7 @@ SECTIONS = [
     "U.S."
 ]
 
-def initialize_directories(base_path='downloaded_images'):
+def initialize_directories(base_path='output'):
     """Ensure the directory exists for image downloads."""
     if not os.path.exists(base_path):
         os.makedirs(base_path)
@@ -66,7 +66,7 @@ class BrowserActions:
         """Initialize the browser actions with search options."""
         self.excel = Files()
         self.excel.create_workbook()
-        logging.basicConfig(filename='llewellynVanDenBerg.log', level=logging.INFO)
+        logging.basicConfig(filename='output/logs.log', level=logging.INFO)
         self.search_phrase = search_phrase
         self.months = get_previous_months(months)
         self.option = SECTIONS[option]
@@ -197,7 +197,7 @@ class BrowserActions:
             try:
                 content_xpath = f"(//*[@data-testid='search-bodega-result'][{i+1}])//*[contains(@class, 'css-16nhkrn')]"
                 content = self.driver.get_text(content_xpath)
-            except:
+            except Exception as e:
                 print('No content at {i}')
                 content = ''
                 logger.info(f"{datetime.now()}: Could not find conent for {title} with error: {e}.")
