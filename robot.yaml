@@ -1,5 +1,5 @@
 tasks:
-  Run My Script:
+  Run Scraper:
     command: python BrowserActions.py
 
 condaConfigFile: conda.yaml
