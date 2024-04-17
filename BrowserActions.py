@@ -194,14 +194,16 @@ class BrowserActions:
             # get title, content, image and phrase count of each search result
             title_xpath = f"(//*[@data-testid='search-bodega-result'][{i+1}])//h4"
             title = self.driver.get_text(title_xpath)
-            content_xpath = f"(//*[@data-testid='search-bodega-result'][{i+1}])//*[contains(@class, 'css-16nhkrn')]"
             try:
+                content_xpath = f"(//*[@data-testid='search-bodega-result'][{i+1}])//*[contains(@class, 'css-16nhkrn')]"
                 content = self.driver.get_text(content_xpath)
             except:
+                print('No content at {i}')
                 content = ''
                 logger.info(f"{datetime.now()}: Could not find conent for {title} with error: {e}.")
             image_xpath = f"(//*[@data-testid='search-bodega-result'][{i+1}])//img" 
             try:
+                self.driver.wait_until_element_is_visible(image_xpath, timeout=10)
                 image = self.driver.get_element_attribute(image_xpath, 'src')
                 download_path = initialize_directories()
                 image_path = download_image(image, download_path)
