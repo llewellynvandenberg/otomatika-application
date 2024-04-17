@@ -72,7 +72,7 @@ class BrowserActions:
         self.option = SECTIONS[option]
         self.driver = Selenium()
         URL = "https://www.nytimes.com/"
-        self.driver.open_available_browser(URL)
+        self.driver.open_available_browser(URL, headless = True, maximized = True)
         logger.info(f"{datetime.now()}: Opened browser and navigated to {URL}.")
         
         
@@ -110,6 +110,7 @@ class BrowserActions:
     def navigate_to_search(self):
         """Navigate to the search page and input the search query."""
         # wait and click search button
+        sleep(1)
         self.driver.click_element_when_clickable("css:[data-testid='search-button']", timeout=100)
         #self.driver.click_button("css:[data-testid='search-button']")
         # wait and input search phrase
@@ -132,7 +133,7 @@ class BrowserActions:
             # wait and click load more button
             self.driver.wait_until_element_is_enabled("css:[data-testid='search-show-more-button']", timeout=100)
             self.driver.click_button("css:[data-testid='search-show-more-button']")
-            sleep(3)
+            print('Loading more results...')
         except Exception as e:
             logger.info(f"{datetime.now()}: Could not load more results with error: {e}.")
             print(f'could not navigate to next page: {e}')
