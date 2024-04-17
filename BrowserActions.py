@@ -239,12 +239,10 @@ class BrowserActions:
         
 if __name__ == '__main__':
     # Initialize the WorkItems object
-    workitems = WorkItems()
-    # Load the current work item
-    workitems.load_work_item()
+    wi = WorkItems()
     # Access input data (assuming JSON format for work items)
-    input_data = workitems.get_work_item_payload()
-    browser = BrowserActions(input_data['search_phrase'],  input_data['section'], input_data['months'])
+    wi.get_input_work_item()
+    browser = BrowserActions(wi.get_work_item_variable("search_phrase"),  wi.get_work_item_variable("section"), wi.get_work_item_variable("months"))
     print('initiated browser')
     browser.navigate_to_search()
     print('navigated to search')
