@@ -136,8 +136,7 @@ class BrowserActions:
             # scroll to bottom of page to avoid bot detection
             self.driver.execute_javascript("window.scrollTo(0, document.body.scrollHeight);")
             # wait and click load more button
-            self.driver.wait_until_element_is_enabled("css:[data-testid='search-show-more-button']", timeout=20)
-            self.driver.click_button("css:[data-testid='search-show-more-button']")
+            self.driver.click_element_when_clickable("css:[data-testid='search-show-more-button']", timeout=20)
             print('Loading more results...')
         except Exception as e:
             logger.info(f"{datetime.now()}: Could not load more results with error: {e}.")
@@ -245,18 +244,19 @@ class BrowserActions:
         
 if __name__ == '__main__':
     # Initialize the WorkItems object
-    #wi = WorkItems()
+    wi = WorkItems()
     # Access input data (assuming JSON format for work items)
-    #wi.get_input_work_item()
-    #browser = BrowserActions(wi.get_work_item_variable("search_phrase"),  wi.get_work_item_variable("section"), wi.get_work_item_variable("months"))
-    browser = BrowserActions('masters',  0, 2)
-    print('initiated browser')
-    browser.navigate_to_search()
-    print('navigated to search')
-    browser.search()
-    print('searched')
-    browser.save_file()
-    print('file saved')
-    browser.close()
-    print('quitted')
+    wi.get_input_work_item()
+    browser = BrowserActions(wi.get_work_item_variable("search_phrase"),  wi.get_work_item_variable("section"), wi.get_work_item_variable("months"))
+    try:
+        print('initiated browser')
+        browser.navigate_to_search()
+        print('navigated to search')
+        browser.search()
+        print('searched')
+        browser.save_file()
+        print('file saved')
+    finally:
+        browser.close()    
+        print('quitted')
     
