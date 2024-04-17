@@ -3,3 +3,4 @@ tasks:
     command: python BrowserActions.py
 
 condaConfigFile: conda.yaml
+artifactsDir: output
