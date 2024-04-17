@@ -120,7 +120,7 @@ class BrowserActions:
         # submit search phrase by pressing enter
         self.driver.press_keys("css:[data-testid='search-input']", "ENTER")
         # wait for search results to load
-        self.driver.wait_until_page_does_not_contain_element("css:[data-testid='search-input']", timeout=30)
+        self.driver.wait_until_page_contains_element("css:[data-testid='search-page-text-field']", timeout=30)
         self.select_sort_by()
         sleep(1)
         self.select_topic()
