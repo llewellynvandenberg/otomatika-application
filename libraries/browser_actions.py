@@ -137,6 +137,8 @@ class BrowserActions:
             # get date of each search result
             date_el = self.driver.find_element("css:[data-testid='todays-date']", card)
             date_text = self.driver.get_text(date_el)
+            if 'ago' in date_text:
+                date_text = str(datetime.now().strftime("%B %d").replace(" 0", " "))
             month_name_short = date_text.split(' ')[0][:3]
             try:
                 year = str(date_text.split(',')[1])
