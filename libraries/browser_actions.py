@@ -108,10 +108,10 @@ class BrowserActions:
             sleep(1)
             self.driver.wait_until_element_is_visible("css:[data-testid='search-bodega-result']", timeout=20)
             cards = self.driver.find_elements("css:[data-testid='search-bodega-result']")
-            for i, _ in enumerate(cards):
+            for i, card in enumerate(cards):
                 # get date of each search result
-                date_xpath = f"(//*[@data-testid='search-bodega-result'][{i+1}])//*[@data-testid='todays-date']"
-                date_text = self.driver.get_text(date_xpath)
+                date_el = self.driver.find_element("css:[data-testid='todays-date']", card)
+                date_text = self.driver.get_text(date_el)
                 # get month name and year
                 month_name_short = date_text.split(' ')[0][:3]
                 try:
