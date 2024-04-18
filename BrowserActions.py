@@ -122,7 +122,6 @@ class BrowserActions:
             self.driver.click_element_when_clickable("css:[data-testid='Reject all-btn']", timeout=20)
         except:
             pass
-        self.driver.capture_page_screenshot('output/home_page.png')
         self.driver.click_element_when_clickable("css:[data-testid='search-button']", timeout=20)
         #self.driver.click_button("css:[data-testid='search-button']")
         # wait and input search phrase
@@ -156,7 +155,6 @@ class BrowserActions:
         # find all search results up untill the specified months (stop when earlier month is found)
         while 1:
             # wait and gather all search results
-            self.driver.capture_page_screenshot('output/search_results.png')
             sleep(1)
             self.driver.wait_until_element_is_visible("css:[data-testid='search-bodega-result']", timeout=20)
             cards = self.driver.find_elements("css:[data-testid='search-bodega-result']")
@@ -256,7 +254,6 @@ if __name__ == '__main__':
     # Access input data (assuming JSON format for work items)
     wi.get_input_work_item()
     browser = BrowserActions(wi.get_work_item_variable("search_phrase"),  wi.get_work_item_variable("section"), wi.get_work_item_variable("months"))
-    #browser = BrowserActions('drake', 1, 0) 
     try:
         print('initiated browser')
         browser.navigate_to_search()
