@@ -1,5 +1,6 @@
 import os
 import re
+import zipfile
 import logging
 from time import sleep
 from datetime import datetime
@@ -23,7 +24,13 @@ SECTIONS = [
     "U.S."
 ]
 
-def initialize_directories(base_path='output'):
+def zip_files(directory, output_path):
+    with zipfile.ZipFile(output_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        for root, dirs, files in os.walk(directory):
+            for file in files:
+                zipf.write(os.path.join(root, file), arcname=file)
+
+def initialize_directories(base_path='images'):
     """Ensure the directory exists for image downloads."""
     if not os.path.exists(base_path):
         os.makedirs(base_path)
@@ -229,6 +236,7 @@ class BrowserActions:
 
     def save_file(self):
         """Save the Excel file with the collected data."""
+        zip_files('images', 'output/images.zip')
         file_name = "output/NY_TIMES_ARTICLES.xlsx"
         self.excel.auto_size_columns("A", "E")
         self.excel.save_workbook(file_name)
@@ -248,6 +256,7 @@ if __name__ == '__main__':
     # Access input data (assuming JSON format for work items)
     wi.get_input_work_item()
     browser = BrowserActions(wi.get_work_item_variable("search_phrase"),  wi.get_work_item_variable("section"), wi.get_work_item_variable("months"))
+    #browser = BrowserActions('drake', 1, 0) 
     try:
         print('initiated browser')
         browser.navigate_to_search()
