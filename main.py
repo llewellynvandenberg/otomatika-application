@@ -5,9 +5,8 @@ if __name__ == '__main__':
     # Initialize the WorkItems object
     wi = WorkItems()
     # Access input data (assuming JSON format for work items)
-    #wi.get_input_work_item()
-    #browser = BrowserActions(wi.get_work_item_variable("search_phrase"), wi.get_work_item_variable("section"), wi.get_work_item_variable("months"))
-    browser = BrowserActions('drake', 0, 0)
+    wi.get_input_work_item()
+    browser = BrowserActions(wi.get_work_item_variable("search_phrase"), wi.get_work_item_variable("section"), wi.get_work_item_variable("months"))
     try:
         browser.navigate_to_search()
         browser.search()
