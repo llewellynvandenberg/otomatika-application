@@ -1,13 +1,9 @@
-import os
-import re
-import zipfile
 import logging
 from time import sleep
 from datetime import datetime
-from RPA.HTTP import HTTP
 from RPA.Excel.Files import Files
 from RPA.Browser.Selenium import Selenium
-from RPA.Robocorp.WorkItems import WorkItems
+from libraries.utils import *
 
 logger = logging.getLogger(__name__)
 
@@ -23,49 +19,6 @@ SECTIONS = [
     "Travel",
     "U.S."
 ]
-
-def zip_files(directory, output_path):
-    with zipfile.ZipFile(output_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
-        for root, dirs, files in os.walk(directory):
-            for file in files:
-                zipf.write(os.path.join(root, file), arcname=file)
-
-def initialize_directories(base_path='images'):
-    """Ensure the directory exists for image downloads."""
-    if not os.path.exists(base_path):
-        os.makedirs(base_path)
-        logger.info(f"{datetime.now()}: Created directory: {base_path}")
-    return base_path
-
-def download_image(url, download_path):
-    """Download images using RPA.HTTP and return the local path."""
-    http = HTTP()
-    filename = url.split('/')[-1].split('?')[0]  # Basic cleaning to remove URL parameters
-    filepath = os.path.join(download_path, filename)
-    http.download(url, filepath)
-    return filepath
-
-def get_previous_months(n=0):
-    """Calculate month names and years for the past 'n' months."""
-    try:
-        n = max(n, 1)
-    except:
-        n = 1
-    current_date = datetime.now()
-    months = []
-    for _ in range(n):
-        months.append((str(current_date.strftime('%B'))[:3], str(current_date.year)))
-        if current_date.month == 1:
-            current_date = current_date.replace(month=12, year=current_date.year-1)
-        else:
-            current_date = current_date.replace(month=current_date.month-1)
-    
-    return months
-
-def has_money(text):
-    """Select a news topic based on the specified option."""
-    money_pattern = re.compile(r"\$[0-9]{1,3}(,[0-9]{3})*(\.[0-9]{0,2})? | [0-9]+(?:\s(?:dollars|USD))")
-    return bool(money_pattern.search(text))
 
 class BrowserActions:
     
@@ -111,7 +64,6 @@ class BrowserActions:
             logger.info(f"{datetime.now()}: Selected sort by 'newest' successfully.")
         except Exception as e:
             logger.info(f"{datetime.now()}: Could not select 'sort by' with error: {e}.")
-            print(f'could not select sort by: {e}')
             
             
     def navigate_to_search(self):
@@ -143,10 +95,8 @@ class BrowserActions:
             self.driver.execute_javascript("window.scrollTo(0, document.body.scrollHeight);")
             # wait and click load more button
             self.driver.click_element_when_clickable("css:[data-testid='search-show-more-button']", timeout=20)
-            print('Loading more results...')
         except Exception as e:
             logger.info(f"{datetime.now()}: Could not load more results with error: {e}.")
-            print(f'could not navigate to next page: {e}')
             
         
     def search(self):
@@ -182,10 +132,11 @@ class BrowserActions:
         # wait and gather all search results
         self.driver.wait_until_element_is_visible("css:[data-testid='search-bodega-result']", timeout=20)
         cards = self.driver.find_elements("css:[data-testid='search-bodega-result']")
-        for i, _ in enumerate(cards):
+        
+        for i, card in enumerate(cards):
             # get date of each search result
-            date_xpath = f"(//*[@data-testid='search-bodega-result'][{i+1}])//*[@data-testid='todays-date']"
-            date_text = self.driver.get_text(date_xpath)
+            date_el = self.driver.find_element("css:[data-testid='todays-date']", card)
+            date_text = self.driver.get_text(date_el)
             month_name_short = date_text.split(' ')[0][:3]
             try:
                 year = str(date_text.split(',')[1])
@@ -196,26 +147,23 @@ class BrowserActions:
                 done = 1
                 break
             # get title, content, image and phrase count of each search result
-            title_xpath = f"(//*[@data-testid='search-bodega-result'][{i+1}])//h4"
-            title = self.driver.get_text(title_xpath)
+            title_el = self.driver.find_element("css:[data-testid='search-bodega-result'] h4", card)
+            title = self.driver.get_text(title_el)
             try:
-                content_xpath = f"(//*[@data-testid='search-bodega-result'][{i+1}])//*[contains(@class, 'css-16nhkrn')]"
-                content = self.driver.get_text(content_xpath)
+                content_el = self.driver.find_element("class:css-16nhkrn", card)
+                content = self.driver.get_text(content_el)
             except Exception as e:
-                print('No content at {i}')
                 content = ''
                 logger.info(f"{datetime.now()}: Could not find conent for {title} with error: {e}.")
-            image_xpath = f"(//*[@data-testid='search-bodega-result'][{i+1}])//img" 
             try:
-                self.driver.wait_until_element_is_visible(image_xpath, timeout=10)
-                image = self.driver.get_element_attribute(image_xpath, 'src')
+                image_el = self.driver.find_element('tag:img', card)
+                image = self.driver.get_element_attribute(image_el, 'src')
                 download_path = initialize_directories()
                 image_path = download_image(image, download_path)
             except Exception as e:
                 # set empty image path if image download fails or no image is found
                 image_path = ''
                 logger.info(f"{datetime.now()}: Could not download image for {title} with error: {e}.")
-                print(f'Could not download image {e}')
             # get count of search phraser in title and content
             phrase_count = str((content + title)).lower().count(self.search_phrase.lower())
             # check if Dollar amount is present in title or content
@@ -247,22 +195,4 @@ class BrowserActions:
         self.excel.close_workbook()
         logger.info(f"{datetime.now()}: Closed browser and Excel file.")
                
-        
-if __name__ == '__main__':
-    # Initialize the WorkItems object
-    wi = WorkItems()
-    # Access input data (assuming JSON format for work items)
-    wi.get_input_work_item()
-    browser = BrowserActions(wi.get_work_item_variable("search_phrase"),  wi.get_work_item_variable("section"), wi.get_work_item_variable("months"))
-    try:
-        print('initiated browser')
-        browser.navigate_to_search()
-        print('navigated to search')
-        browser.search()
-        print('searched')
-        browser.save_file()
-        print('file saved')
-    finally:
-        browser.close()    
-        print('quitted')
     

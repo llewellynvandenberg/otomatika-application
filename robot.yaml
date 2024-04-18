@@ -2,7 +2,7 @@ tasks:
   Run Scraper:
     command:
       - python
-      - BrowserActions.py
+      - main.py
 
 condaConfigFile: conda.yaml
 artifactsDir: output
